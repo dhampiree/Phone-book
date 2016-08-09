@@ -10,8 +10,13 @@
 #import <CoreData/CoreData.h>
 
 
+
+
+
 @interface DSCoreDataHandler : NSObject
 
+extern NSString * const DSCoreDataEntityContact;
+extern NSString * const DSCoreDataEntityCategory;
 
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
@@ -22,7 +27,11 @@
 
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
+
 -(id)prepareObjectWithEntityName:(NSString*) entityName;
+-(NSArray*) entitiesForEntityName:(NSString*) entityName withBachSize:(NSInteger) batchSize usingSortDescriptors:(NSArray*) descriptors andPredicate:(NSPredicate*) predicate;
+-(NSArray*) entitiesForEntityName:(NSString*) entityName withBachSize:(NSInteger) batchSize usingSortDescriptors:(NSArray*) descriptors;
+-(NSArray*) entitiesForEntityName:(NSString*) entityName withBachSize:(NSInteger) batchSize;
 -(NSArray*) entitiesForEntityName:(NSString*) entityName;
 -(void) deleteObject:(id)entity;
 

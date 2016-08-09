@@ -2,8 +2,9 @@
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10174" systemVersion="15G31" minimumToolsVersion="Automatic">
     <entity name="DSCategory" representedClassName="DSCategory" syncable="YES">
         <attribute name="aTitle" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="rCategories" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="DSCategory" inverseName="rCategories" inverseEntity="DSCategory" syncable="YES"/>
+        <relationship name="rCategories" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="DSCategory" inverseName="rParentCategory" inverseEntity="DSCategory" syncable="YES"/>
         <relationship name="rContacts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DSContact" inverseName="rCategory" inverseEntity="DSContact" syncable="YES"/>
+        <relationship name="rParentCategory" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DSCategory" inverseName="rCategories" inverseEntity="DSCategory" syncable="YES"/>
     </entity>
     <entity name="DSContact" representedClassName="DSContact" syncable="YES">
         <attribute name="aName" optional="YES" attributeType="String" syncable="YES"/>
@@ -11,7 +12,7 @@
         <relationship name="rCategory" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DSCategory" inverseName="rContacts" inverseEntity="DSCategory" syncable="YES"/>
     </entity>
     <elements>
-        <element name="DSCategory" positionX="178" positionY="-21" width="128" height="88"/>
+        <element name="DSCategory" positionX="178" positionY="-21" width="128" height="103"/>
         <element name="DSContact" positionX="-128" positionY="-21" width="128" height="88"/>
     </elements>
 </model>

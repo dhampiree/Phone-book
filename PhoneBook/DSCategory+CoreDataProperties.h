@@ -18,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSString *aTitle;
 @property (nullable, nonatomic, retain) NSSet<DSCategory *> *rCategories;
 @property (nullable, nonatomic, retain) NSSet<DSContact *> *rContacts;
+@property (nullable, nonatomic, retain) DSCategory *rParentCategory;
 
 @end
 

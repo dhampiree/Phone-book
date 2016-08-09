@@ -7,11 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
+@class DSCategory;
+
 
 @protocol DSPhoneBookManagerDelegate <NSObject>
 
 @required
--(void)updateTableView:(NSString*) message;
+-(void)updateTableView:(NSString*) message error:(NSError*) error;
 
 @end
 
@@ -20,10 +22,17 @@
 @property (nonatomic, weak) id <DSPhoneBookManagerDelegate> delegate;
 
 +(instancetype) defaultManager;
--(NSArray*) objectsInCategory:(NSString*) categoryTitle;
+
+-(void) addCategory:(NSString*)categoryTitle toCategory:(DSCategory*)category;
+-(void) addContact:(NSString*) contactName withPhoneNumber:(NSString*)phoneNumber toCategory:(DSCategory*)category;
+
+-(DSCategory*) rootCategory;
+
+-(NSArray*) subcategoriesInCategory:(DSCategory*) category;
+-(NSArray*) contactsInCategory:(DSCategory*) category;
 -(NSArray*) allContacts;
--(void) addCategory:(NSString*)categoryTitle;
--(void) addContact:(NSString*) contactName withPhoneNumber:(NSString*)phoneNumber;
+
+
 -(void) deleteObject:(id)object;
 
 @end

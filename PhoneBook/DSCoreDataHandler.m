@@ -10,7 +10,11 @@
 #import "DSContact.h"
 #import "DSCategory.h"
 
+
 @implementation DSCoreDataHandler
+
+NSString * const DSCoreDataEntityContact = @"DSContact";
+NSString * const DSCoreDataEntityCategory = @"DSCategory";
 
 
 
@@ -21,9 +25,22 @@
     dispatch_once(&onceToken, ^{
         cdHandler = [[DSCoreDataHandler alloc] init];
         [cdHandler managedObjectContext];
+        [cdHandler checkForRootCategory];
     });
     
     return cdHandler;
+}
+
+
+-(void)checkForRootCategory{
+    NSPredicate* predicate = [NSPredicate predicateWithFormat:@"aTitle like 'Root category'"];
+    NSArray* result = [self entitiesForEntityName:DSCoreDataEntityCategory withBachSize:0 usingSortDescriptors:nil andPredicate:predicate];
+    if([result count] == 0){
+        NSLog(@"Category not exeist");
+        DSCategory* category = [self prepareObjectWithEntityName:DSCoreDataEntityCategory];
+        category.aTitle = @"Root category";
+        [category.managedObjectContext save:nil];
+    }
 }
 
 
@@ -33,19 +50,37 @@
 }
 
 
--(NSArray*) entitiesForEntityName:(NSString*) entityName {
+-(NSArray*) entitiesForEntityName:(NSString*) entityName withBachSize:(NSInteger) batchSize usingSortDescriptors:(NSArray*) descriptors andPredicate:(NSPredicate*) predicate{
     NSFetchRequest* request = [[NSFetchRequest alloc] init];
-    NSEntityDescription* descrption = [NSEntityDescription entityForName:entityName inManagedObjectContext:_managedObjectContext];
+    NSEntityDescription* description = [NSEntityDescription entityForName:entityName inManagedObjectContext:self.managedObjectContext];
     
-    [request setEntity:descrption];
+    [request setEntity:description];
+    [request setFetchBatchSize:batchSize];
+    [request setSortDescriptors:descriptors];
+    [request setPredicate:predicate];
     
     NSError* error;
-    NSArray* result = [_managedObjectContext executeFetchRequest:request error:&error];
+    NSArray* result = [self.managedObjectContext executeFetchRequest:request error:&error];
+    
     if(error){
-        NSLog(@"%@",[error localizedDescription]);
-        
+        NSLog(@"%@", [error localizedDescription]);
     }
+    
     return result;
+}
+
+
+-(NSArray*) entitiesForEntityName:(NSString*) entityName withBachSize:(NSInteger) batchSize usingSortDescriptors:(NSArray*) descriptors{
+    return [self entitiesForEntityName:entityName withBachSize:batchSize usingSortDescriptors:descriptors andPredicate:nil];
+}
+
+
+-(NSArray*) entitiesForEntityName:(NSString*) entityName withBachSize:(NSInteger) batchSize{
+    return [self entitiesForEntityName:entityName withBachSize:batchSize usingSortDescriptors:nil];
+}
+
+-(NSArray*) entitiesForEntityName:(NSString*) entityName {
+    return [self entitiesForEntityName:entityName withBachSize:20];
 }
 
 
@@ -82,23 +117,25 @@
         return _persistentStoreCoordinator;
     }
     
-    // Create the coordinator and store
     
     _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
     NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"PhoneBook.sqlite"];
     NSError *error = nil;
     NSString *failureReason = @"There was an error creating or loading the application's saved data.";
     if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
-        // Report any error we got.
-        NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-        dict[NSLocalizedDescriptionKey] = @"Failed to initialize the application's saved data";
-        dict[NSLocalizedFailureReasonErrorKey] = failureReason;
-        dict[NSUnderlyingErrorKey] = error;
-        error = [NSError errorWithDomain:@"YOUR_ERROR_DOMAIN" code:9999 userInfo:dict];
-        // Replace this with code to handle the error appropriately.
-        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
+
+        [[NSFileManager defaultManager] removeItemAtURL:storeURL error:nil];
+        
+        if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]){
+            NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+            dict[NSLocalizedDescriptionKey] = @"Failed to initialize the application's saved data";
+            dict[NSLocalizedFailureReasonErrorKey] = failureReason;
+            dict[NSUnderlyingErrorKey] = error;
+            error = [NSError errorWithDomain:@"YOUR_ERROR_DOMAIN" code:9999 userInfo:dict];
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
+        
     }
     
     return _persistentStoreCoordinator;

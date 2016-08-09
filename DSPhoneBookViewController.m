@@ -55,7 +55,7 @@
     }
     
     DSContact* contact  = [self.contactsArray objectAtIndex:indexPath.row];
-    
+    NSLog(@"%@",contact.rCategory.aTitle);
     cell.textLabel.text = contact.aName;
     cell.detailTextLabel.text = contact.aPhoneNumber;
     
@@ -127,7 +127,7 @@
         NSString* name = [[self.alertController textFields] firstObject].text;
         NSString* phoneNumber = [[self.alertController textFields] lastObject].text;
         
-        [[DSPhoneBookManager defaultManager] addContact:name withPhoneNumber:phoneNumber];
+        //[[DSPhoneBookManager defaultManager] addContact:name withPhoneNumber:phoneNumber];
     }];
     
     okBtn.enabled = NO;
@@ -138,6 +138,12 @@
     [self.alertController addAction:cancelBtn];
     
     [self presentViewController:self.alertController animated:YES completion:nil];
+}
+
+-(void)creatingContactName:(UITextField*) sender{
+    UIAlertAction* okAction = [self.alertController.actions firstObject];
+    NSString* name = sender.text;
+    okAction.enabled = name.length > 2;
 }
 
 
@@ -154,17 +160,14 @@
 }
 
 
--(void)creatingContactName:(UITextField*) sender{
-    UIAlertAction* okAction = [self.alertController.actions firstObject];
-    NSString* name = sender.text;
-    okAction.enabled = name.length > 2;
-}
-
-
 #pragma mark - DSPhoneBookManagerDelegate
--(void)updateTableView:(NSString*) message{
-    self.contactsArray = [self.phoneBookManager allContacts];
-    [self.tableView reloadData];
+-(void)updateTableView:(NSString*) message error:(NSError*) error{
+    if(!error) {
+        self.contactsArray = [self.phoneBookManager allContacts];
+        [self.tableView reloadData];
+    } else {
+        NSLog(@">>> ERROR: %@",[error localizedDescription]);
+    }
 }
 
 

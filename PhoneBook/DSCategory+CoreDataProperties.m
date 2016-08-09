@@ -16,5 +16,6 @@
 @dynamic aTitle;
 @dynamic rCategories;
 @dynamic rContacts;
+@dynamic rParentCategory;
 
 @end

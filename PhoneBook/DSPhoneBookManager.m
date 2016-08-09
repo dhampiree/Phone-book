@@ -30,9 +30,37 @@
 }
 
 
--(NSArray*) objectsInCategory:(NSString*) categoryTitle{
+-(DSCategory*) rootCategory {
+    NSPredicate* predicate = [NSPredicate predicateWithFormat:@"aTitle like 'Root category'"];
+    NSArray* result = [self.cdHandler entitiesForEntityName:DSCoreDataEntityCategory withBachSize:0 usingSortDescriptors:nil andPredicate:predicate];
+    return [result firstObject];
+}
+
+
+-(NSArray*) subcategoriesInCategory:(DSCategory*) category{
+    NSString* entityName = @"DSCategory";
+    NSInteger batchSize = 20;
+    NSSortDescriptor* sortByName = [NSSortDescriptor sortDescriptorWithKey:@"aTitle" ascending:YES];
     
-    return [NSArray array];
+    
+    NSString* predicateString = [NSString stringWithFormat:@"rParentCategory.aTitle like '%@'",category.aTitle];
+    NSPredicate* predicate = [NSPredicate predicateWithFormat:predicateString];
+    
+    return [self.cdHandler entitiesForEntityName:entityName withBachSize:batchSize usingSortDescriptors:@[sortByName] andPredicate:predicate];
+}
+
+-(NSArray*) contactsInCategory:(DSCategory*) category{
+    
+    NSString* entityName = @"DSContact";
+    NSInteger batchSize = 20;
+    NSSortDescriptor* sortByName = [NSSortDescriptor sortDescriptorWithKey:@"aName" ascending:YES];
+    
+    
+    NSString* predicateString = [NSString stringWithFormat:@"rCategory.aTitle like '%@'",category.aTitle];
+    
+    NSPredicate* predicate = [NSPredicate predicateWithFormat:predicateString];
+    
+    return [self.cdHandler entitiesForEntityName:entityName withBachSize:batchSize usingSortDescriptors:@[sortByName] andPredicate:predicate];
 }
 
 
@@ -43,27 +71,47 @@
 }
 
 
--(void) addCategory:(NSString*)categoryTitle{
+-(void) addCategory:(NSString*)categoryTitle toCategory:(DSCategory*)category{
+    NSPredicate* predicte = [NSPredicate predicateWithFormat:@"aTitle like '%@'",category.aTitle];
+    NSArray* result = [self.cdHandler entitiesForEntityName:DSCoreDataEntityCategory withBachSize:0 usingSortDescriptors:nil andPredicate:predicte];
     
-    DSCategory* category =  [self.cdHandler prepareObjectWithEntityName:@"DSCategory"];
-    category.aTitle = categoryTitle;
-    [category.managedObjectContext save:nil];
+    BOOL categoryExist = [result count] > 0;
     
+    NSError* error;
+    if(categoryExist) {
+        error = [NSError errorWithDomain:@"Core data handler" code:1 userInfo:@{@"Error reason": @"Category already exist"}];
+        [self.delegate updateTableView:@"OOPS." error:error];
+        return;
+    }
+    
+    DSCategory* categoryNew =  [self.cdHandler prepareObjectWithEntityName:@"DSCategory"];
+    categoryNew.aTitle = categoryTitle;
+    categoryNew.rParentCategory = category ? category : [self rootCategory];
+    
+    [categoryNew.managedObjectContext save:&error];
+    
+    if(error){
+        [self.delegate updateTableView:@"OOPS." error:error];
+    } else {
+        [self.delegate updateTableView:@"Category was successfully created." error:nil];
+    }
 }
 
 
--(void) addContact:(NSString*) contactName withPhoneNumber:(NSString*)phoneNumber{
+-(void) addContact:(NSString*) contactName withPhoneNumber:(NSString*)phoneNumber toCategory:(DSCategory*)category{
     DSContact* contact = [self.cdHandler prepareObjectWithEntityName:@"DSContact"];
     contact.aName = contactName;
     contact.aPhoneNumber = phoneNumber;
+    contact.rCategory = category ? category : [self rootCategory];
+    
     
     NSError* error;
     [contact.managedObjectContext save:&error];
     
     if(error){
-        NSLog(@" >>> Error: %@",[error localizedDescription]);
+        [self.delegate updateTableView:@"OOPS." error:error];
     } else {
-        [self.delegate updateTableView:@"Contact was successfully created."];
+        [self.delegate updateTableView:@"Contact was successfully created." error:nil];
     }
 }
 
@@ -71,6 +119,8 @@
 -(void) deleteObject:(id)object{
     [self.cdHandler deleteObject:object];
 }
+
+
 
 
 @end
