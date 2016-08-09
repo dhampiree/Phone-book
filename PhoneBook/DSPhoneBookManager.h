@@ -34,5 +34,6 @@
 
 
 -(void) deleteObject:(id)object;
+-(void) deleteCategory:(DSCategory*)category;
 
 @end

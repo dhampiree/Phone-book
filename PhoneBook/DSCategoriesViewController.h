@@ -14,5 +14,6 @@
 @interface DSCategoriesViewController : UITableViewController <DSPhoneBookManagerDelegate>
 
 @property (nonatomic, strong) DSCategory* currentCategory;
+- (IBAction)actionEdit:(UIBarButtonItem *)sender;
 
 @end

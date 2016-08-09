@@ -18,7 +18,7 @@
 @end
 
 @implementation DSPhoneBookManager
-
+/*
 +(instancetype) defaultManager{
     DSPhoneBookManager static *manager;
     static dispatch_once_t onceToken;
@@ -27,6 +27,16 @@
         manager.cdHandler = [DSCoreDataHandler sharedInstance];
     });
     return manager;
+}*/
+
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.cdHandler = [DSCoreDataHandler sharedInstance];
+    }
+    return self;
 }
 
 
@@ -121,6 +131,20 @@
 }
 
 
+-(void) deleteCategory:(DSCategory*)category{
+    NSArray* subcategories = [self subcategoriesInCategory:category];
+    
+    for(DSCategory* cat in subcategories){
+        [self deleteCategory:cat];
+    }
+    
+    NSArray* contatsArray = [self contactsInCategory:category];
+    for (DSContact* contact in contatsArray) {
+        contact.rCategory = [self rootCategory];
+    }
+    
+    [self deleteObject:category];
+}
 
 
 @end

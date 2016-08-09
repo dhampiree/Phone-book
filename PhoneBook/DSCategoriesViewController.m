@@ -14,21 +14,29 @@
 
 @interface DSCategoriesViewController ()
 
+
 @property (nonatomic, strong) NSArray* listOfCategories;
 @property (nonatomic, strong) NSArray* listOfContacts;
 @property (nonatomic, strong) UIAlertController* alertController;
+@property (nonatomic, strong) DSPhoneBookManager* phoneBookManager;
 
 @end
 
 @implementation DSCategoriesViewController
 
+NSInteger const DSTableViewSectionContact  = 1;
+NSInteger const DSTableViewSectionCategory = 0;
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     if(!self.currentCategory){
-        self.currentCategory = [[DSPhoneBookManager defaultManager] rootCategory];
+        self.phoneBookManager = [[DSPhoneBookManager alloc] init];
+        self.currentCategory = [self.phoneBookManager rootCategory];
     }
-    [DSPhoneBookManager defaultManager].delegate = self;
+    self.phoneBookManager.delegate = self;
+    self.navigationItem.title = self.currentCategory.aTitle;
 }
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -38,12 +46,15 @@
 
 -(void) setCurrentCategory:(DSCategory *)currentCategory{
     _currentCategory = currentCategory;
-    self.listOfContacts = [[DSPhoneBookManager defaultManager] contactsInCategory:_currentCategory];
-    self.listOfCategories = [[DSPhoneBookManager defaultManager] subcategoriesInCategory:_currentCategory];
+    
+    self.phoneBookManager = [[DSPhoneBookManager alloc] init];
+    self.phoneBookManager.delegate = self;
+    
+    self.listOfContacts = [self.phoneBookManager contactsInCategory:_currentCategory];
+    self.listOfCategories = [self.phoneBookManager subcategoriesInCategory:_currentCategory];
     
     [self.tableView reloadData];
 }
-
 
 
 #pragma mark - UITableViewDataSource
@@ -51,12 +62,13 @@
     return 2;
 }
 
+
 - (nullable NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
     switch (section) {
-        case 0:{
+        case DSTableViewSectionCategory:{
             return @"Categories";
         }
-        case 1: {
+        case DSTableViewSectionContact: {
             return @"Contacts";
         }
             
@@ -69,10 +81,10 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     switch (section) {
-        case 0:
+        case DSTableViewSectionCategory:
             return [self.listOfCategories count] +1;
             
-        case 1:
+        case DSTableViewSectionContact:
             return [self.listOfContacts count] +1;
             
         default:
@@ -81,7 +93,6 @@
     
     return 0;
 }
-
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -93,9 +104,11 @@
     }
     
     switch (indexPath.section) {
-        case 0: {
+        case DSTableViewSectionCategory: {
             if(indexPath.row == 0) {
                 cell.textLabel.text = @"Add category";
+                cell.imageView.image = nil;
+
             } else {
                 DSCategory* category = [self.listOfCategories objectAtIndex:indexPath.row-1];
                 cell.imageView.image = [UIImage imageNamed:@"group.png"];
@@ -104,9 +117,11 @@
             break;
         }
             
-        case 1: {
+        case DSTableViewSectionContact: {
             if(indexPath.row == 0) {
                 cell.textLabel.text = @"Add contact";
+                cell.imageView.image = nil;
+
             } else {
                 DSContact* contact = [self.listOfContacts objectAtIndex:indexPath.row-1];
                 cell.imageView.image = [UIImage imageNamed:@"contact.png"];
@@ -114,7 +129,7 @@
             }
             break;
         }
-            
+        
         default:
             break;
     }
@@ -123,19 +138,32 @@
 }
 
 
+
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return !(indexPath.row == 0);
+}
+
+
 #pragma mark - UITableViewDelegate
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     switch (indexPath.section) {
             
-        case 0:
+        case DSTableViewSectionCategory:
             if(indexPath.row == 0){
                 [self addNewCategory];
+            } else {
+                DSCategoriesViewController* cvc= [self.storyboard instantiateViewControllerWithIdentifier:@"DSCategoriesViewController"];
+                DSCategory* newCategory = [self.listOfCategories objectAtIndex:indexPath.row-1];
+                cvc.currentCategory = newCategory;
+                [self.navigationController pushViewController:cvc animated:YES];
             }
             break;
             
-        case 1:
+        case DSTableViewSectionContact:
             if(indexPath.row == 0){
                 [self addNewContact];
             }
@@ -147,6 +175,8 @@
     
 }
 
+
+#pragma mark - ALERTS
 
 -(void) addNewCategory {
     self.alertController = [UIAlertController alertControllerWithTitle:@"New category" message:@"Enter title" preferredStyle:UIAlertControllerStyleAlert];
@@ -160,7 +190,7 @@
     
     UIAlertAction* okBtn = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         NSString* title = [[self.alertController textFields] firstObject].text;
-        [[DSPhoneBookManager defaultManager] addCategory:title toCategory:self.currentCategory];
+        [self.phoneBookManager addCategory:title toCategory:self.currentCategory];
     }];
     
     okBtn.enabled = NO;
@@ -195,7 +225,7 @@
         NSString* name = [[self.alertController textFields] firstObject].text;
         NSString* phoneNumber = [[self.alertController textFields] lastObject].text;
         
-        [[DSPhoneBookManager defaultManager] addContact:name withPhoneNumber:phoneNumber toCategory:self.currentCategory];
+        [self.phoneBookManager addContact:name withPhoneNumber:phoneNumber toCategory:self.currentCategory];
     }];
     
     okBtn.enabled = NO;
@@ -216,59 +246,65 @@
 }
 
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
+        switch (indexPath.section) {
+            case DSTableViewSectionCategory: {
+                DSCategory* category = [self.listOfCategories objectAtIndex:indexPath.row-1];
+                NSMutableArray *temp = [self.listOfCategories mutableCopy];
+                [temp removeObjectAtIndex:indexPath.row-1];
+                self.listOfCategories = [temp copy];
+                [self.phoneBookManager deleteCategory:category];
+                break;
+            }
+                
+            case DSTableViewSectionContact: {
+                DSContact* contact = [self.listOfContacts objectAtIndex:indexPath.row-1];
+                NSMutableArray *temp = [self.listOfContacts mutableCopy];
+                [temp removeObjectAtIndex:indexPath.row-1];
+                self.listOfContacts = [temp copy];
+                [self.phoneBookManager deleteObject:contact];
+                break;
+            }
+                
+            default:
+                break;
+        }
+        
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }   
 }
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
 
 
 #pragma mark - DSPhoneBookManagerDelegate
 -(void)updateTableView:(NSString*) message error:(NSError*) error{
     if(!error){
-        self.listOfContacts = [[DSPhoneBookManager defaultManager] contactsInCategory:_currentCategory];
-        self.listOfCategories = [[DSPhoneBookManager defaultManager] subcategoriesInCategory:_currentCategory];
+        self.listOfContacts = [self.phoneBookManager contactsInCategory:_currentCategory];
+        self.listOfCategories = [self.phoneBookManager subcategoriesInCategory:_currentCategory];
         [self.tableView reloadData];
     }
 }
+
+
+#pragma mark - Actions
+- (IBAction)actionEdit:(UIBarButtonItem *)sender {
+    BOOL isEditing = ![self.tableView isEditing];
+    [self.tableView setEditing:isEditing animated:YES];
+    
+    if (isEditing) {
+        sender.title = @"Done";
+    } else {
+        sender.title = @"Delete";
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self updateTableView:nil error:nil];
+        });
+    }
+}
+
+
+
 
 @end

@@ -40,7 +40,7 @@
         <!--Categories View Controller-->
         <scene sceneID="6lS-V7-9k2">
             <objects>
-                <tableViewController id="S0c-rM-Dx4" customClass="DSCategoriesViewController" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="DSCategoriesViewController" id="S0c-rM-Dx4" customClass="DSCategoriesViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="3L4-wD-OY0">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -60,11 +60,25 @@
                             <outlet property="delegate" destination="S0c-rM-Dx4" id="oXn-Ye-say"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="KT3-T2-qWq"/>
+                    <navigationItem key="navigationItem" id="KT3-T2-qWq">
+                        <barButtonItem key="rightBarButtonItem" title="Delete" id="P5N-AP-bAo">
+                            <connections>
+                                <action selector="actionEdit:" destination="S0c-rM-Dx4" id="fDS-PO-G1U"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mOw-00-XWj" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="itd-HC-Dzu">
+                    <rect key="frame" x="0.0" y="0.0" width="46" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <state key="normal" title="Button"/>
+                    <connections>
+                        <segue destination="S0c-rM-Dx4" kind="show" identifier="DSCategoriesViewController" id="x7F-fz-FMZ"/>
+                    </connections>
+                </button>
             </objects>
-            <point key="canvasLocation" x="651" y="-217"/>
+            <point key="canvasLocation" x="696" y="-217"/>
         </scene>
         <!--Phone Book-->
         <scene sceneID="Prd-Ij-gwX">
@@ -107,4 +121,7 @@
             <point key="canvasLocation" x="691" y="479"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="xjj-DP-85i"/>
+    </inferredMetricsTieBreakers>
 </document>
