@@ -6,22 +6,6 @@
     </dependencies>
     <scenes>
         <!--Navigation Controller-->
-        <scene sceneID="ndK-WQ-kSr">
-            <objects>
-                <navigationController id="wLR-Dr-JRN" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="k2p-3g-KIQ">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <connections>
-                        <segue destination="KJg-Uu-ul3" kind="relationship" relationship="rootViewController" id="xa2-fa-qyq"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="gf8-ov-N8c" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-106" y="479"/>
-        </scene>
-        <!--Navigation Controller-->
         <scene sceneID="Xsl-MT-Xhg">
             <objects>
                 <navigationController id="geZ-QL-ury" sceneMemberID="viewController">
@@ -79,46 +63,6 @@
                 </button>
             </objects>
             <point key="canvasLocation" x="696" y="-217"/>
-        </scene>
-        <!--Phone Book-->
-        <scene sceneID="Prd-Ij-gwX">
-            <objects>
-                <tableViewController id="KJg-Uu-ul3" customClass="DSPhoneBookViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="7q1-l3-1Wr">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="5Ee-qg-5pe">
-                                <rect key="frame" x="0.0" y="92" width="600" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="5Ee-qg-5pe" id="TVi-Jr-sGi">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="KJg-Uu-ul3" id="0Oy-Yl-Lgb"/>
-                            <outlet property="delegate" destination="KJg-Uu-ul3" id="I5h-Sd-ziC"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" title="Phone Book" id="ygL-Jy-1JV">
-                        <barButtonItem key="leftBarButtonItem" title="Delete" id="Afa-nz-K7F">
-                            <connections>
-                                <action selector="actionEditTable:" destination="KJg-Uu-ul3" id="c8P-63-Kd0"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="7OP-PF-tM1">
-                            <connections>
-                                <action selector="actionAddContact:" destination="KJg-Uu-ul3" id="APb-Ur-pZC"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="aso-OG-2sn" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="691" y="479"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>

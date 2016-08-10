@@ -13,7 +13,6 @@
 		3A0165731D58DCF6001B8EB6 /* PhoneBook.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3A0165711D58DCF6001B8EB6 /* PhoneBook.xcdatamodeld */; };
 		3A0165751D58DCF7001B8EB6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3A0165741D58DCF7001B8EB6 /* Assets.xcassets */; };
 		3A0165781D58DCF7001B8EB6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3A0165761D58DCF7001B8EB6 /* LaunchScreen.storyboard */; };
-		3A0165811D58DE0D001B8EB6 /* DSPhoneBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A0165801D58DE0D001B8EB6 /* DSPhoneBookViewController.m */; };
 		3A0165841D58DE51001B8EB6 /* DSCoreDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A0165831D58DE51001B8EB6 /* DSCoreDataHandler.m */; };
 		3A0165941D590C6C001B8EB6 /* DSPhoneBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A0165931D590C6C001B8EB6 /* DSPhoneBookManager.m */; };
 		3A0165BC1D593B76001B8EB6 /* DSContact+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A0165B51D593B76001B8EB6 /* DSContact+CoreDataProperties.m */; };
@@ -35,8 +34,6 @@
 		3A0165741D58DCF7001B8EB6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3A0165771D58DCF7001B8EB6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3A0165791D58DCF7001B8EB6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		3A01657F1D58DE0D001B8EB6 /* DSPhoneBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DSPhoneBookViewController.h; path = ../DSPhoneBookViewController.h; sourceTree = "<group>"; };
-		3A0165801D58DE0D001B8EB6 /* DSPhoneBookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DSPhoneBookViewController.m; path = ../DSPhoneBookViewController.m; sourceTree = "<group>"; };
 		3A0165821D58DE51001B8EB6 /* DSCoreDataHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSCoreDataHandler.h; sourceTree = "<group>"; };
 		3A0165831D58DE51001B8EB6 /* DSCoreDataHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSCoreDataHandler.m; sourceTree = "<group>"; };
 		3A0165921D590C6C001B8EB6 /* DSPhoneBookManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPhoneBookManager.h; sourceTree = "<group>"; };
@@ -88,8 +85,6 @@
 				3AE4A1591D59959100C22510 /* images */,
 				3A0165911D58EB70001B8EB6 /* Models */,
 				3A0165951D5911AC001B8EB6 /* components */,
-				3A01657F1D58DE0D001B8EB6 /* DSPhoneBookViewController.h */,
-				3A0165801D58DE0D001B8EB6 /* DSPhoneBookViewController.m */,
 				3AE4A1521D5991D300C22510 /* DSCategoriesViewController.h */,
 				3AE4A1531D5991D300C22510 /* DSCategoriesViewController.m */,
 				3A0165681D58DCF6001B8EB6 /* AppDelegate.h */,
@@ -222,7 +217,6 @@
 				3A01656A1D58DCF6001B8EB6 /* AppDelegate.m in Sources */,
 				3A0165BD1D593B76001B8EB6 /* DSContact.m in Sources */,
 				3AE4A15E1D59987400C22510 /* DSCategory+CoreDataProperties.m in Sources */,
-				3A0165811D58DE0D001B8EB6 /* DSPhoneBookViewController.m in Sources */,
 				3A0165671D58DCF6001B8EB6 /* main.m in Sources */,
 				3A0165841D58DE51001B8EB6 /* DSCoreDataHandler.m in Sources */,
 				3A0165941D590C6C001B8EB6 /* DSPhoneBookManager.m in Sources */,
