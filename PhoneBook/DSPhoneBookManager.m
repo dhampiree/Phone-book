@@ -82,7 +82,8 @@
 
 
 -(void) addCategory:(NSString*)categoryTitle toCategory:(DSCategory*)category{
-    NSPredicate* predicte = [NSPredicate predicateWithFormat:@"aTitle like '%@'",category.aTitle];
+    NSString* predicateAtring = [NSString stringWithFormat:@"aTitle like '%@'",categoryTitle];
+    NSPredicate* predicte = [NSPredicate predicateWithFormat:predicateAtring];
     NSArray* result = [self.cdHandler entitiesForEntityName:DSCoreDataEntityCategory withBachSize:0 usingSortDescriptors:nil andPredicate:predicte];
     
     BOOL categoryExist = [result count] > 0;

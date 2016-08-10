@@ -36,7 +36,6 @@ NSString * const DSCoreDataEntityCategory = @"DSCategory";
     NSPredicate* predicate = [NSPredicate predicateWithFormat:@"aTitle like 'Root category'"];
     NSArray* result = [self entitiesForEntityName:DSCoreDataEntityCategory withBachSize:0 usingSortDescriptors:nil andPredicate:predicate];
     if([result count] == 0){
-        NSLog(@"Category not exeist");
         DSCategory* category = [self prepareObjectWithEntityName:DSCoreDataEntityCategory];
         category.aTitle = @"Root category";
         [category.managedObjectContext save:nil];

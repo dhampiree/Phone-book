@@ -31,9 +31,9 @@ NSInteger const DSTableViewSectionCategory = 0;
     [super viewDidLoad];
     if(!self.currentCategory){
         self.phoneBookManager = [[DSPhoneBookManager alloc] init];
+        self.phoneBookManager.delegate = self;
         self.currentCategory = [self.phoneBookManager rootCategory];
     }
-    self.phoneBookManager.delegate = self;
     self.navigationItem.title = self.currentCategory.aTitle;
 }
 
@@ -139,9 +139,41 @@ NSInteger const DSTableViewSectionCategory = 0;
 
 
 
-
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     return !(indexPath.row == 0);
+}
+
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        // Delete the row from the data source
+        switch (indexPath.section) {
+            case DSTableViewSectionCategory: {
+                DSCategory* category = [self.listOfCategories objectAtIndex:indexPath.row-1];
+                NSMutableArray *temp = [self.listOfCategories mutableCopy];
+                [temp removeObjectAtIndex:indexPath.row-1];
+                self.listOfCategories = [temp copy];
+                [self.phoneBookManager deleteCategory:category];
+                break;
+            }
+                
+            case DSTableViewSectionContact: {
+                DSContact* contact = [self.listOfContacts objectAtIndex:indexPath.row-1];
+                NSMutableArray *temp = [self.listOfContacts mutableCopy];
+                [temp removeObjectAtIndex:indexPath.row-1];
+                self.listOfContacts = [temp copy];
+                [self.phoneBookManager deleteObject:contact];
+                break;
+            }
+                
+            default:
+                break;
+        }
+        
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
+        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+    }
 }
 
 
@@ -174,6 +206,8 @@ NSInteger const DSTableViewSectionCategory = 0;
     }
     
 }
+
+
 
 
 #pragma mark - ALERTS
@@ -246,36 +280,14 @@ NSInteger const DSTableViewSectionCategory = 0;
 }
 
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        switch (indexPath.section) {
-            case DSTableViewSectionCategory: {
-                DSCategory* category = [self.listOfCategories objectAtIndex:indexPath.row-1];
-                NSMutableArray *temp = [self.listOfCategories mutableCopy];
-                [temp removeObjectAtIndex:indexPath.row-1];
-                self.listOfCategories = [temp copy];
-                [self.phoneBookManager deleteCategory:category];
-                break;
-            }
-                
-            case DSTableViewSectionContact: {
-                DSContact* contact = [self.listOfContacts objectAtIndex:indexPath.row-1];
-                NSMutableArray *temp = [self.listOfContacts mutableCopy];
-                [temp removeObjectAtIndex:indexPath.row-1];
-                self.listOfContacts = [temp copy];
-                [self.phoneBookManager deleteObject:contact];
-                break;
-            }
-                
-            default:
-                break;
-        }
-        
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+-(void) alertWithError:(NSError*) error{
+    NSString* message = [error.userInfo objectForKey:@"Error reason"];
+    self.alertController = [UIAlertController alertControllerWithTitle:@"OOPS!" message:message preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* okBtn = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+    
+    [self.alertController addAction:okBtn];
+    [self presentViewController:self.alertController animated:YES completion:nil];
 }
 
 
@@ -285,6 +297,8 @@ NSInteger const DSTableViewSectionCategory = 0;
         self.listOfContacts = [self.phoneBookManager contactsInCategory:_currentCategory];
         self.listOfCategories = [self.phoneBookManager subcategoriesInCategory:_currentCategory];
         [self.tableView reloadData];
+    } else {
+        [self alertWithError:error];
     }
 }
 
